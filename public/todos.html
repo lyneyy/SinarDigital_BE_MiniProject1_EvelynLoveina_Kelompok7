@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Todo List</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        background: linear-gradient(135deg, #93d0f8, rgb(45, 94, 150));
+        font-family: Arial, sans-serif;
+        padding-top: 50px;
+    }
+    .container {
+        background-color: rgba(255,255,255,0.9);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        width: 400px;
+        text-align: center;
+    }
+    h1 { margin-bottom: 20px; color: #333; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+        background-color: #eee;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: left;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .todo-text { flex: 1; margin-left: 10px; }
+    .delete-btn { border: none; background: none; font-size: 16px; cursor: pointer; color: red; }
+    a {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background-color: #6C63FF;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+    }
+    a:hover { background-color: #5548c8; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>All Todos</h1>
+    <ul id="todo-list"></ul>
+    <a href="/form.html">Add another todo</a>
+</div>
+
+<script>
+const fetchTodos = () => {
+    fetch('/api/todos')
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            data.forEach(todo => {
+                const li = document.createElement('li');
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = todo.completed;
+                checkbox.addEventListener('change', () => {
+                    fetch(`/api/todos/${todo.id}`, { method: 'PATCH' })
+                        .then(() => {
+                            span.style.textDecoration = checkbox.checked ? 'line-through' : 'none';
+                        });
+                });
+
+                const span = document.createElement('span');
+                span.className = 'todo-text';
+                span.textContent = todo.text;
+                if (todo.completed) span.style.textDecoration = 'line-through';
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.textContent = '❌';
+                delBtn.addEventListener('click', () => {
+                    fetch(`/api/todos/${todo.id}`, { method: 'DELETE' })
+                        .then(() => li.remove());
+                });
+
+                li.appendChild(checkbox);
+                li.appendChild(span);
+                li.appendChild(delBtn);
+                list.appendChild(li);
+            });
+        })
+        .catch(err => console.error('Error fetching todos:', err));
+};
+fetchTodos();
+</script>
+</body>
+</html>
