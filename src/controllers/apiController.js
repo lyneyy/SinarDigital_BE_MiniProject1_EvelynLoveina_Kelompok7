@@ -24,7 +24,7 @@ exports.addTodo = (req, res) => {
     };
     todos.push(newTodo);
     saveData(todos);
-    // redirect harus ke /todos.html yang ada di public
+
     res.redirect('/todos.html');
 };
 
@@ -45,4 +45,5 @@ exports.deleteTodo = (req, res) => {
     if (todos.length === initialLength) return res.status(404).json({ error: 'Todo not found' });
     saveData(todos);
     res.json({ success: true });
+
 };
