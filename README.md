@@ -6,6 +6,4 @@ Aplikasi ini dibuat menggunakan **Express.js** dan berfungsi sebagai backend sed
 ## 🚀 Features
 - 3+ Routes (Home, API route, Todo routes)
 - Menggunakan Express Router untuk modularisasi
-
 - Data disimpan di `data.json` (tanpa database)
-
